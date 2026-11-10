@@ -196,14 +196,16 @@ h2::before {
   position: sticky;
   top: 0;
   z-index: 5;
-  background: rgba(46, 20, 80, .94);
+  background: rgba(46, 20, 80, .96);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border-bottom: 2px solid rgba(255, 165, 31, .25);
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: .35rem;
-  padding: .6rem 1rem .45rem;
+  padding: .6rem 1rem;
 }
 
 .brand {
@@ -213,29 +215,87 @@ h2::before {
   letter-spacing: .02em
 }
 
-nav {
-  display: flex;
-  gap: .3rem;
-  overflow-x: auto;
-  scrollbar-width: none;
-  margin: 0 -1rem;
-  padding: 0 1rem .15rem;
-  scroll-snap-type: x proximity;
+/* Botón hamburguesa */
+.menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  color: var(--flor);
+  border: 2px solid rgba(255, 165, 31, .45);
+  border-radius: .6rem;
 }
 
-nav::-webkit-scrollbar {
-  display: none
+.menu-btn:hover {
+  background: rgba(255, 165, 31, .12)
+}
+
+.barras {
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 14px
+}
+
+.barras span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform .2s, opacity .2s, top .2s
+}
+
+.barras span:nth-child(1) {
+  top: 0
+}
+
+.barras span:nth-child(2) {
+  top: 6px
+}
+
+.barras span:nth-child(3) {
+  top: 12px
+}
+
+.top.abierto .barras span:nth-child(1) {
+  top: 6px;
+  transform: rotate(45deg)
+}
+
+.top.abierto .barras span:nth-child(2) {
+  opacity: 0
+}
+
+.top.abierto .barras span:nth-child(3) {
+  top: 6px;
+  transform: rotate(-45deg)
+}
+
+/* Menú desplegable en celular */
+nav {
+  display: none;
+  flex-direction: column;
+  gap: .25rem;
+  width: 100%;
+  padding: .5rem 0 .3rem
+}
+
+.top.abierto nav {
+  display: flex
 }
 
 nav a {
-  flex: 0 0 auto;
-  scroll-snap-align: start;
   color: var(--tinta);
   text-decoration: none;
-  padding: .4rem .9rem;
-  border-radius: 2rem;
+  padding: .6rem 1rem;
+  border-radius: .6rem;
   min-height: 44px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   border: 1px solid transparent;
 }
@@ -250,18 +310,28 @@ nav a[aria-current=page] {
   font-weight: 700
 }
 
+/* Menú horizontal en pantallas grandes */
 @media(min-width:48rem) {
   .top {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    flex-wrap: nowrap;
     padding: .6rem 1.5rem
   }
 
+  .menu-btn {
+    display: none
+  }
+
   nav {
-    margin: 0;
-    padding: 0;
-    overflow: visible
+    display: flex;
+    flex-direction: row;
+    width: auto;
+    padding: 0
+  }
+
+  nav a {
+    display: inline-flex;
+    padding: .4rem .9rem;
+    border-radius: 2rem
   }
 }
 
@@ -1130,11 +1200,6 @@ select {
 
 .recompensa {
   color: var(--azucar)
-}
-
-.nivel audio {
-  width: 100%;
-  margin: .3rem 0
 }
 
 .wiki:empty {

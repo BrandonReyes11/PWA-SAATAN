@@ -30,14 +30,11 @@ let filtro = { q: '', tipo: 'todos', solo: false };
 
 /* ---------- Conexión con la Api ---------- */
 
-// En tu computadora usa la Api local; publicada, usa la Api en la nube.
-// Cambia TU-API por el nombre real de tu App Service cuando la publiques.
-const API = ['localhost', '127.0.0.1'].includes(location.hostname)
-  ? 'http://localhost:5095'
-  : 'https://kaxtik-api.runasp.net';
+// La PWA (local o publicada) siempre usa la Api en la nube.
+const API = 'https://kaxtik-api.runasp.net';
 
 const api = async path => {
-  const r = await fetch(API + path, { signal: AbortSignal.timeout(4000) });
+  const r = await fetch(API + path, { signal: AbortSignal.timeout(10000) });
   if (!r.ok) throw new Error(r.status);
   return r.json();
 };
@@ -59,7 +56,7 @@ function aplicarApi(chars, levels) {
   }
 
   if (levels.length) {
-    // Recompensa, audio y Wikipedia aún vienen de data.json (por número de nivel).
+    // Recompensa y Wikipedia aún vienen de data.json (por número de nivel).
     const locales = D.niveles;
     D.niveles = levels.map(l => {
       const extra = locales[l.number] || {};
@@ -70,7 +67,6 @@ function aplicarApi(chars, levels) {
         a: l.atmosphere,
         img: l.imageUrl ? API + l.imageUrl : extra.img,
         r: extra.r || '',
-        audio: extra.audio || null,
         wiki: extra.wiki || 'Día_de_Muertos'
       };
     });
@@ -398,12 +394,6 @@ const V = {
 
             ${n.r ? `<p class="recompensa">Recompensa: ${esc(n.r)}</p>` : ''}
 
-            ${n.audio
-      ? `<audio controls preload="none" src="${esc(n.audio)}"
-                  aria-label="Audio de ${esc(n.t)}"></audio>`
-      : ''
-    }
-
             <p>
               <button class="sec dato" data-i="${i}">
                 Dato curioso
@@ -655,14 +645,6 @@ function enlaza(v) {
   }
 
   if (v === 'niveles') {
-
-    const as = [...app.querySelectorAll('audio')];
-
-    as.forEach(a =>
-      a.onplay = () =>
-        as.forEach(o => o !== a && o.pause())
-    );
-
     app.querySelectorAll('.dato').forEach(b =>
       b.onclick = () => wiki(+b.dataset.i)
     );
@@ -691,6 +673,19 @@ function enlaza(v) {
 
   addEventListener('hashchange', ruta);
   ruta();
+
+  // Menú hamburguesa (solo visible en pantallas pequeñas)
+  const cab = $('.top'), menuBtn = $('#menuBtn');
+
+  const menu = abierto => {
+    cab.classList.toggle('abierto', abierto);
+    menuBtn.setAttribute('aria-expanded', abierto);
+    menuBtn.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+  };
+
+  menuBtn.onclick = () => menu(!cab.classList.contains('abierto'));
+  $('#nav').addEventListener('click', e => { if (e.target.closest('a')) menu(false); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') menu(false); });
 
   const est = $('#estado');
 
