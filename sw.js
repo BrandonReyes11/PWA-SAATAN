@@ -1,4 +1,4 @@
-const V = 'saatan-v20';
+const V = 'saatan-v23';
 
 const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'data.json', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'img/gameplay_practica.png', 'img/gameplay_selva_nahual.png', 'img/gameplay_iglesia_diablo.png', 'img/personajes/iktan.png', 'img/personajes/abbi.png', 'img/personajes/nahual.png'];
 
@@ -14,9 +14,9 @@ const guardar = (r, x) => {
     return x;
 };
 // Primero la red (datos frescos); si no hay conexión, lo guardado.
-const redPrimero = r => fetch(r).then(x => guardar(r, x)).catch(() => caches.match(r));
+const redPrimero = r => fetch(r).then(x => guardar(r, x)).catch(() => caches.match(r).then(h => h || Response.error()));
 // Primero lo guardado (imágenes y fuentes); si no existe, la red.
-const cachePrimero = r => caches.match(r).then(h => h || fetch(r).then(x => guardar(r, x)));
+const cachePrimero = r => caches.match(r).then(h => h || fetch(r).then(x => guardar(r, x))).catch(() => Response.error());
 
 self.addEventListener('fetch', e => {
     const r = e.request; if (r.method !== 'GET') return;
@@ -30,5 +30,5 @@ self.addEventListener('fetch', e => {
     if (u.origin !== location.origin) return;
 
     if (u.pathname.endsWith('data.json')) { e.respondWith(redPrimero(r)); return; }
-    e.respondWith(caches.match(r).then(h => h || fetch(r).then(x => guardar(r, x))).catch(() => caches.match('index.html')));
+    e.respondWith(caches.match(r).then(h => h || fetch(r).then(x => guardar(r, x))).catch(() => caches.match('index.html').then(h => h || Response.error())));
 });

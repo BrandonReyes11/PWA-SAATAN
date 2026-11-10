@@ -25,6 +25,15 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({
 }[c]));
 
 let cap = 0, timer, D = null;
+
+// Chrome avisa muy pronto que la app se puede instalar; se escucha desde el inicio
+// para no perder el aviso mientras cargan los datos de la Api.
+let dp = null, mostrarInstalar = () => { };
+addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  dp = e;
+  mostrarInstalar();
+});
 let favs = store.get('favs', []);
 let filtro = { q: '', tipo: 'todos', solo: false };
 
@@ -700,22 +709,38 @@ function enlaza(v) {
     navigator.serviceWorker.register('sw.js').catch(() => { });
   }
 
-  let dp;
+  // ---------- Instalación de la app ----------
+  const banner = $('#banner'), btnInst = $('#instalar'), txt = $('#bannerTexto');
+  const yaInstalada = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const cerrado = () => { try { return sessionStorage.getItem('banner') === 'no' } catch { return false } };
 
-  addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    dp = e;
-    $('#instalar').hidden = false;
-  });
+  // iPhone y iPad no tienen botón de instalar: se explica cómo hacerlo desde Safari.
+  if (esIOS && !yaInstalada && !cerrado()) {
+    txt.innerHTML = '<b>Instala Saatan Paal en tu iPhone:</b> toca el botón <b>Compartir</b> de Safari y luego <b>Agregar a inicio</b>.';
+    banner.hidden = false;
+  }
 
-  $('#instalar').onclick = async () => {
+  // Chrome, Edge y Android: muestra el botón (también si el aviso llegó antes).
+  mostrarInstalar = () => {
+    btnInst.hidden = false;
+    if (!cerrado()) banner.hidden = false;
+  };
+  if (dp) mostrarInstalar();
+
+  btnInst.onclick = async () => {
     if (!dp) return;
-
     dp.prompt();
     await dp.userChoice;
-
     dp = null;
-    $('#instalar').hidden = true;
+    banner.hidden = true;
+  };
+
+  addEventListener('appinstalled', () => { banner.hidden = true; });
+
+  $('#cerrarBanner').onclick = () => {
+    banner.hidden = true;
+    try { sessionStorage.setItem('banner', 'no') } catch { }
   };
 
 })();
