@@ -1,4 +1,3 @@
-
 addEventListener('error', e => {
   const m = document.querySelector('#app');
   if (m) m.innerHTML = '<p class="err">Error: ' + e.message + ' (' + String(e.filename || '').split('/').pop() + ':' + e.lineno + ')</p>';
@@ -28,6 +27,69 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({
 let cap = 0, timer, D = null;
 let favs = store.get('favs', []);
 let filtro = { q: '', tipo: 'todos', solo: false };
+
+/* ---------- Conexión con la Api ---------- */
+
+// En tu computadora usa la Api local; publicada, usa la Api en la nube.
+// Cambia TU-API por el nombre real de tu App Service cuando la publiques.
+const API = ['localhost', '127.0.0.1'].includes(location.hostname)
+  ? 'http://localhost:5095'
+  : 'https://kaxtik-api.runasp.net';
+
+const api = async path => {
+  const r = await fetch(API + path, { signal: AbortSignal.timeout(4000) });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+};
+
+// Mientras la Api no tenga un campo de tipo, se deduce del rol.
+const tipoDe = rol => /jefe|antagonista|enemigo/i.test(rol) ? 'enemigo' : 'aliado';
+
+// Convierte los datos de la Api al formato que usan las vistas.
+function aplicarApi(chars, levels) {
+  if (chars.length) {
+    D.personajes = chars.map(c => ({
+      id: String(c.id),
+      n: c.name,
+      rol: c.role,
+      tipo: tipoDe(c.role),
+      d: c.description,
+      img: c.imageUrl ? API + c.imageUrl : null
+    }));
+  }
+
+  if (levels.length) {
+    // Recompensa, audio y Wikipedia aún vienen de data.json (por número de nivel).
+    const locales = D.niveles;
+    D.niveles = levels.map(l => {
+      const extra = locales[l.number] || {};
+      return {
+        n: l.number === 0 ? 'Tutorial' : `Nivel ${l.number}`,
+        t: l.name,
+        d: l.story,
+        a: l.atmosphere,
+        img: l.imageUrl ? API + l.imageUrl : extra.img,
+        r: extra.r || '',
+        audio: extra.audio || null,
+        wiki: extra.wiki || 'Día_de_Muertos'
+      };
+    });
+  }
+}
+
+// Si la Api no responde, usa lo último guardado; si no hay nada, se queda con data.json.
+async function cargarApi() {
+  try {
+    const [chars, levels] = await Promise.all([api('/api/characters'), api('/api/levels')]);
+    store.set('api', { chars, levels });
+    aplicarApi(chars, levels);
+  } catch {
+    const g = store.get('api', null);
+    if (g) aplicarApi(g.chars, g.levels);
+  }
+}
+
+/* ---------- Ilustraciones ---------- */
 
 const ALTAR = `<svg class="altar" viewBox="0 0 320 320" role="img" aria-label="Ilustración de un altar de Hanal Pixán con arco, flores de cempasúchil, velas y mucbipollo">
 <path d="M40 310V120a120 120 0 0 1 240 0V310" fill="none" stroke="#ffa51f" stroke-width="8"/>
@@ -82,67 +144,172 @@ const GUIR = `<div class="guirnalda" aria-hidden="true">
 <svg viewBox="0 0 100 100"><use href="#flor"/></svg>
 </div>`;
 
+// Íconos de bloques (estilo voxel) para las mecánicas.
+const ICONOS = [
+  // Hierba alta: sigilo
+  '<rect x="3" y="11" width="2" height="10"/><rect x="7" y="6" width="2" height="15"/><rect x="11" y="9" width="2" height="12"/><rect x="15" y="5" width="2" height="16"/><rect x="19" y="10" width="2" height="11"/>',
+  // Piedra lanzada: distracción
+  '<path d="M3 18C6 6 14 4 19 10" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/><rect x="16" y="14" width="6" height="5"/><rect x="17" y="13" width="4" height="1"/>',
+  // Columna: usar el entorno
+  '<rect x="5" y="3" width="14" height="3"/><rect x="7" y="6" width="3" height="13"/><rect x="14" y="6" width="3" height="13"/><rect x="4" y="19" width="16" height="2"/>',
+  // Altar escalonado: ofrenda
+  '<rect x="3" y="17" width="18" height="4"/><rect x="6" y="13" width="12" height="4"/><rect x="9" y="9" width="6" height="4"/><rect x="11" y="4" width="2" height="5"/>'
+];
+
+/* ---------- Vistas ---------- */
+
 const V = {
 
-  inicio: () => `
-    <section class="hero">
-      <div>
-        <h1>${esc(D.game.titulo)}</h1>
-        <p class="lema">${esc(D.game.lema)}</p>
-        <p>${esc(D.game.sinopsis)}</p>
-        <p>
-          <a class="btn" href="#historia">Conoce la historia</a>
-          <a class="btn sec" href="#niveles">Explora los niveles</a>
-        </p>
-      </div>
-      ${ALTAR}
-    </section>
-    ${GUIR}
-    <h2>Cómo se juega</h2>
-    <div class="grid">
-      ${D.mecanicas.map(m => `
-        <article class="card">
-          <h3>${esc(m.t)}</h3>
-          <p>${esc(m.d)}</p>
-        </article>
-      `).join('')}
-    </div>
-    <p>${esc(D.game.genero)} · ${esc(D.game.plataformas)}</p>
-  `,
+  inicio: () => {
+    const protas = D.personajes.filter(p => p.tipo === 'aliado').slice(0, 2);
+    const e = D.evento;
+    const dias = Math.ceil((new Date(e.fecha) - Date.now()) / 864e5);
+
+    return `
+      <section class="hero">
+        <div class="hero-texto">
+          <h1>${esc(D.game.titulo)}</h1>
+          <p class="lema">${esc(D.game.lema)}</p>
+          <p>${esc(D.game.sinopsis)}</p>
+          <ul class="chips">
+            <li>${esc(D.game.genero)}</li>
+            <li>${esc(D.game.plataformas)}</li>
+          </ul>
+          <p class="acciones">
+            <a class="btn" href="#historia">Conoce la historia</a>
+            <a class="btn sec" href="#niveles">Explora los niveles</a>
+          </p>
+        </div>
+        <div class="hero-altar">${ALTAR}</div>
+      </section>
+
+      ${GUIR}
+
+      <section>
+        <h2>Cómo se juega</h2>
+        <div class="grid mec">
+          ${D.mecanicas.map((m, i) => `
+            <article class="card mecanica">
+              <svg class="icono" viewBox="0 0 24 24" aria-hidden="true">${ICONOS[i % ICONOS.length]}</svg>
+              <h3>${esc(m.t)}</h3>
+              <p>${esc(m.d)}</p>
+            </article>
+          `).join('')}
+        </div>
+      </section>
+
+      ${protas.length ? `
+        <section>
+          <h2>Los protagonistas</h2>
+          <div class="duo">
+            ${protas.map(p => `
+              <a class="duo-item" href="#personajes">
+                <span class="marco">
+                  ${p.img ? `<img class="retrato" src="${esc(p.img)}" alt="Modelo 3D de ${esc(p.n)}" loading="lazy">` : ''}
+                </span>
+                <span>
+                  <b>${esc(p.n)}</b>
+                  <small>${esc(p.rol)}</small>
+                </span>
+              </a>
+            `).join('')}
+          </div>
+        </section>
+      ` : ''}
+
+      <section>
+        <h2>Los mundos</h2>
+        <div class="mundos">
+          ${D.niveles.map(n => `
+            <a class="mundo" href="#niveles">
+              ${n.img ? `<img src="${esc(n.img)}" alt="Escenario: ${esc(n.t)}" loading="lazy">` : ''}
+              <span class="etiqueta">${esc(n.n)}</span>
+              <b>${esc(n.t)}</b>
+            </a>
+          `).join('')}
+        </div>
+      </section>
+
+      ${dias > 0 ? `
+        <a class="aviso-evento" href="#evento">
+          <span class="num">${dias}</span>
+          <span>
+            <b>${dias === 1 ? 'día' : 'días'} para la ${esc(e.nombre)}</b>
+            <small>Consulta la fecha, el lugar y el mapa</small>
+          </span>
+        </a>
+      ` : ''}
+    `;
+  },
 
   historia: () => {
     const H = D.historia;
     const tabs = ['Introducción', ...H.capitulos.map(c => c.tab)];
     const c = cap > 0 ? H.capitulos[cap - 1] : null;
     const ult = cap === tabs.length - 1;
+    const nivel = c && D.niveles.find(n => n.t.toLowerCase().includes(c.tab.toLowerCase()));
 
     return `
       <h2>Historia</h2>
-      <div class="tools" role="group" aria-label="Capítulos">
+
+      <ol class="camino" aria-label="Capítulos">
         ${tabs.map((t, i) => `
-          <button class="${i === cap ? '' : 'sec'}"
-            data-c="${i}" aria-pressed="${i === cap}">
-            ${esc(t)}
-          </button>
+          <li>
+            <button class="paso${i === cap ? ' actual' : ''}${i < cap ? ' leido' : ''}"
+              data-c="${i}" aria-current="${i === cap ? 'step' : 'false'}">
+              <span class="punto" aria-hidden="true"></span>
+              ${esc(t)}
+            </button>
+          </li>
         `).join('')}
-      </div>
-      ${c
+      </ol>
+
+      <article class="capitulo">
+        ${c
         ? `
-          <h3>${esc(c.titulo)}</h3>
-          ${c.texto.map(p => `<p>${esc(p)}</p>`).join('')}
-          ${c.recompensa.length
-            ? `<div class="recomp"><b>Recompensa</b>${c.recompensa.map(p => `<p>${esc(p)}</p>`).join('')}</div>`
-            : ''}
-        `
+            ${nivel && nivel.img
+          ? `<figure class="portada-cap">
+                  <img src="${esc(nivel.img)}" alt="Escenario: ${esc(nivel.t)}">
+                  <span class="etiqueta">${esc(nivel.n)}</span>
+                </figure>`
+          : ''
+        }
+            <h3>${esc(c.titulo)}</h3>
+            <div class="relato">
+              ${c.texto.map(p => `<p>${esc(p)}</p>`).join('')}
+            </div>
+            ${c.recompensa.length
+          ? `<aside class="recomp">
+                  <svg class="icono" viewBox="0 0 24 24" aria-hidden="true">${ICONOS[3]}</svg>
+                  <div>
+                    <b>Recompensa</b>
+                    ${c.recompensa.map(p => `<p>${esc(p)}</p>`).join('')}
+                  </div>
+                </aside>`
+          : ''
+        }
+          `
         : `
-          <h3>Introducción</h3>
-          ${H.intro.map(s => `<p class="verso">${s.map(esc).join('<br>')}</p>`).join('')}
-        `
+            <h3>Introducción</h3>
+            <div class="calavera-lit">
+              ${H.intro.map(s => `<p class="verso">${s.map(esc).join('<br>')}</p>`).join('')}
+            </div>
+          `
       }
+      </article>
+
       ${ult
-        ? `<p class="final">${esc(H.final)}</p>`
-        : `<p><button data-c="${cap + 1}">Siguiente</button></p>`
+        ? `<blockquote class="final">
+            <svg width="20" height="60" viewBox="0 0 20 60" aria-hidden="true"><use href="#vela"/></svg>
+            <p>${esc(H.final)}</p>
+          </blockquote>`
+        : ''
       }
+
+      <div class="pasos">
+        ${cap > 0 ? `<button class="sec" data-c="${cap - 1}">Anterior</button>` : '<span></span>'}
+        ${!ult ? `<button data-c="${cap + 1}">Siguiente: ${esc(tabs[cap + 1])}</button>` : ''}
+      </div>
     `;
   },
 
@@ -172,29 +339,33 @@ const V = {
         </button>
       </div>
 
-      <div class="grid">
+      <div class="grid pj">
         ${l.length
-          ? l.map(p => `
-            <article class="card ${p.tipo}">
+        ? l.map(p => `
+            <article class="card personaje ${p.tipo}">
+              <div class="marco">
+                ${p.img
+            ? `<img class="retrato" src="${esc(p.img)}"
+                      alt="Modelo 3D de ${esc(p.n)}" loading="lazy">`
+            : ''
+          }
+              </div>
+
+              <div class="info">
+                <h3>${esc(p.n)}</h3>
+                <p class="rol">${esc(p.rol)}</p>
+                <p>${esc(p.d)}</p>
+              </div>
+
               <button class="fav" data-id="${p.id}"
                 aria-pressed="${favs.includes(p.id)}"
                 aria-label="Favorito: ${esc(p.n)}">
                 ${favs.includes(p.id) ? '★' : '☆'}
               </button>
-
-              ${p.img
-                ? `<img class="retrato" src="${esc(p.img)}"
-                    alt="Modelo 3D de ${esc(p.n)}" loading="lazy">`
-                : ''
-              }
-
-              <h3>${esc(p.n)}</h3>
-              <p class="rol">${esc(p.rol)}</p>
-              <p>${esc(p.d)}</p>
             </article>
           `).join('')
-          : '<p>No hay personajes con ese filtro. Cambia la búsqueda o quita los filtros.</p>'
-        }
+        : '<p>No hay personajes con ese filtro. Cambia la búsqueda o quita los filtros.</p>'
+      }
       </div>
     `;
   },
@@ -204,23 +375,43 @@ const V = {
     <div class="grid niv">
       ${D.niveles.map((n, i) => `
         <article class="card nivel">
-          <img class="img-nivel" src="${esc(n.img)}"
-            alt="Escenario: ${esc(n.t)}" loading="lazy">
+          <div class="marco-nivel">
+            ${n.img
+      ? `<img class="img-nivel" src="${esc(n.img)}"
+                  alt="Escenario: ${esc(n.t)}" loading="lazy">`
+      : ''
+    }
+            <span class="etiqueta">${esc(n.n)}</span>
+          </div>
 
-          <h3>${esc(n.n)}: ${esc(n.t)}</h3>
-          <p>${esc(n.d)}</p>
-          <p class="recompensa">Recompensa: ${esc(n.r)}</p>
+          <div class="info">
+            <h3>${esc(n.t)}</h3>
+            <p>${esc(n.a || n.d)}</p>
 
-          <audio controls preload="none" src="${esc(n.audio)}"
-            aria-label="Audio de ${esc(n.t)}"></audio>
+            ${n.a
+      ? `<details>
+                  <summary>Leer la historia</summary>
+                  <p>${esc(n.d)}</p>
+                </details>`
+      : ''
+    }
 
-          <p>
-            <button class="sec dato" data-i="${i}">
-              Dato curioso
-            </button>
-          </p>
+            ${n.r ? `<p class="recompensa">Recompensa: ${esc(n.r)}</p>` : ''}
 
-          <div class="wiki" id="w${i}" role="status"></div>
+            ${n.audio
+      ? `<audio controls preload="none" src="${esc(n.audio)}"
+                  aria-label="Audio de ${esc(n.t)}"></audio>`
+      : ''
+    }
+
+            <p>
+              <button class="sec dato" data-i="${i}">
+                Dato curioso
+              </button>
+            </p>
+
+            <div class="wiki" id="w${i}" role="status"></div>
+          </div>
         </article>
       `).join('')}
     </div>
@@ -229,6 +420,8 @@ const V = {
   evento: () => {
     const e = D.evento;
     const f = new Date(e.fecha);
+    const fin = e.fin ? new Date(e.fin) : null;
+    const hora = x => x.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
 
     // Búsqueda de Google Maps usando el nombre y la dirección completa.
     const direccionCompleta = `${e.lugar}, ${e.direccion}`;
@@ -244,22 +437,23 @@ const V = {
         <article class="card">
           <h3>Fecha</h3>
           <p>${f.toLocaleDateString('es-MX', {
-            dateStyle: 'full'
-          })}</p>
+      dateStyle: 'full'
+    })}</p>
         </article>
 
         <article class="card">
-          <h3>Hora</h3>
-          <p>${f.toLocaleTimeString('es-MX', {
-            hour: '2-digit',
-            minute: '2-digit'
-          })}</p>
+          <h3>Horario</h3>
+          <p>
+            Inicio: ${hora(f)}
+            ${fin ? `<br>Cierre: ${hora(fin)}` : ''}
+          </p>
         </article>
 
         <article class="card">
           <h3>Lugar</h3>
           <p>
             ${esc(e.lugar)}
+            ${e.edificio ? `<br><strong>${esc(e.edificio)}</strong>` : ''}
             <br>
             ${esc(e.direccion)}
           </p>
@@ -270,7 +464,7 @@ const V = {
       <h3>Ubicación de la Universidad Tecnológica de Cancún</h3>
 
       <p>
-        <strong>${esc(e.lugar)}</strong>
+        <strong>${esc(e.lugar)}${e.edificio ? `, ${esc(e.edificio)}` : ''}</strong>
         <br>
         ${esc(e.direccion)}
       </p>
@@ -299,6 +493,8 @@ const V = {
   }
 
 };
+
+/* ---------- Wikipedia ---------- */
 
 async function wiki(i) {
   const n = D.niveles[i];
@@ -342,6 +538,8 @@ function pinta(box, t, e, off) {
     <small>Fuente: Wikipedia${off ? ' (guardado de tu última consulta)' : ''}</small>
   `;
 }
+
+/* ---------- Navegación ---------- */
 
 function ruta() {
   clearInterval(timer);
@@ -471,6 +669,8 @@ function enlaza(v) {
   }
 }
 
+/* ---------- Arranque ---------- */
+
 (async () => {
 
   try {
@@ -486,6 +686,9 @@ function enlaza(v) {
     return;
   }
 
+  // Personajes y niveles desde la Api (con respaldo si no responde).
+  await cargarApi();
+
   addEventListener('hashchange', ruta);
   ruta();
 
@@ -499,7 +702,7 @@ function enlaza(v) {
   on();
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    navigator.serviceWorker.register('sw.js').catch(() => { });
   }
 
   let dp;

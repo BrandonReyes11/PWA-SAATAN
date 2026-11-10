@@ -1,7 +1,7 @@
 {
-    "name": "Saatan Historia",
-    "short_name": "Saatan",
-    "description": "Promoción del videojuego Saatan Historia y su evento.",
+    "name": "Saatan Paal",
+    "short_name": "Saatan Paal",
+    "description": "Promoción del videojuego Saatan Paal y su evento.",
     "start_url": "./index.html",
     "scope": "./",
     "display": "standalone",

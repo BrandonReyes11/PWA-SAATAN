@@ -1,7 +1,6 @@
-
 {
     "game": {
-        "titulo": "Saatan Historia",
+        "titulo": "Saatan Paal",
         "lema": "Un niño, una perrita de azúcar y un camino de cempasúchil para volver a casa.",
         "sinopsis": "Iktan despierta en una celda helada y sin recuerdos. Con la ayuda de Abbi, una xoloitzcuintle hecha de calaverita de azúcar, deberá cruzar cuatro mundos del Mictlán usando el sigilo, la distracción y su ingenio, mientras cada recompensa levanta un altar de muertos.",
         "genero": "Sigilo y puzzles 2D",
@@ -46,7 +45,7 @@
         {
             "id": "nahual",
             "n": "El Nahual",
-            "rol": "Jefe del Nivel II",
+            "rol": "Jefe del nivel 1",
             "tipo": "enemigo",
             "d": "Mezcla de jaguar y lobo que acecha desde las ramas. Reacciona al menor ruido.",
             "img": "img/personajes/nahual.png"
@@ -54,7 +53,7 @@
     ],
     "niveles": [
         {
-            "n": "Práctica",
+            "n": "Tutorial",
             "t": "Zona de entrenamiento",
             "r": "Técnicas de sigilo",
             "d": "Aprende a esconderte en la hierba alta, evitar el cono de visión y moverte sin hacer ruido.",
@@ -63,7 +62,7 @@
             "wiki": "Día_de_Muertos"
         },
         {
-            "n": "Nivel I",
+            "n": "Nivel 1",
             "t": "La selva",
             "r": "Trompos de gatitos",
             "d": "Avanza entre la niebla y atrae al Nahual hacia unas ruinas inestables.",
@@ -72,7 +71,7 @@
             "wiki": "Nahual"
         },
         {
-            "n": "Nivel II",
+            "n": "Nivel 2",
             "t": "La iglesia",
             "r": "El altar completo",
             "d": "Esquiva la mirada roja del diablo y derriba las tablas de los vitrales.",
@@ -115,7 +114,7 @@
         "capitulos": [
             {
                 "tab": "Selva",
-                "titulo": "Nivel II – La selva",
+                "titulo": "Nivel 1 – La selva",
                 "texto": [
                     "Al cruzar la puerta, el frío del calabozo fue reemplazado por un calor húmedo y asfixiante. Iktan y Abbi se encontraron en medio de una selva densa, rodeados de árboles colosales cuyas raíces retorcidas parecían serpientes y una espesa niebla verde que apenas dejaba pasar la luz.",
                     "Al dar los primeros pasos sobre la tierra mojada, Abbi se detuvo en seco. Su cuerpecito de azúcar temblaba. Mirando hacia la oscuridad de la maleza, le advirtió a Iktan que debían tener extremo cuidado. Allí habitaba un Nahual, una bestia puramente malvada que cazaba sin descanso a quien invadiera su territorio.",
@@ -129,7 +128,7 @@
             },
             {
                 "tab": "Iglesia",
-                "titulo": "Nivel IV – La iglesia",
+                "titulo": "Nivel 2 – La iglesia",
                 "texto": [
                     "Con el costal a cuestas, Iktan y Abbi subieron los escalones de piedra hacia la imponente iglesia. Al empujar las grandes puertas de madera, ingresaron a un abismo oscuro.",
                     "En el centro se alzaba el Diablo, una inmensa sombra sin rostro que proyectaba desde su cabeza dos haces de luz roja que barrían el suelo como reflectores. Si esa mirada tocaba a Iktan, su alma quedaría atrapada para siempre.",
@@ -145,11 +144,13 @@
     "wiki_idioma": "es",
     "evento": {
         "nombre": "Expo Videojuegos UT Cancún",
-        "fecha": "2026-11-20T17:00:00",
+        "fecha": "2026-11-20T14:00:00",
         "lugar": "Universidad Tecnológica de Cancún",
         "direccion": "Carretera Cancún–Aeropuerto, Km 11.5, Cancún, Quintana Roo",
-        "desc": "Prueba la demo de Saatan Historia, conoce al equipo y descubre el resto de los videojuegos del cuatrimestre.",
+        "desc": "Prueba la demo de Saatan Paal, conoce al equipo y descubre el resto de los videojuegos del cuatrimestre.",
         "lat": 21.0456,
-        "lon": -86.8738
+        "lon": -86.8738,
+        "fin": "2026-11-20T18:30:00",
+        "edificio": "Edificio B"
     }
 }
