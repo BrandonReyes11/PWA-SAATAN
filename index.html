@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Saatan Historia</title>
+    <meta name="description" content="Saatan Historia: un videojuego de sigilo inspirado en el Día de Muertos.">
+    <meta name="theme-color" content="#1d0b2e">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <defs>
+            <symbol id="flor" viewBox="0 0 100 100">
+                <g fill="#ffa51f">
+                    <ellipse cx="50" cy="50" rx="9" ry="44" transform="rotate(0 50 50)" />
+                    <ellipse cx="50" cy="50" rx="9" ry="44" transform="rotate(30 50 50)" />
+                    <ellipse cx="50" cy="50" rx="9" ry="44" transform="rotate(60 50 50)" />
+                    <ellipse cx="50" cy="50" rx="9" ry="44" transform="rotate(90 50 50)" />
+                    <ellipse cx="50" cy="50" rx="9" ry="44" transform="rotate(120 50 50)" />
+                    <ellipse cx="50" cy="50" rx="9" ry="44" transform="rotate(150 50 50)" />
+                </g>
+                <g fill="#ff7a00">
+                    <ellipse cx="50" cy="50" rx="7" ry="31" transform="rotate(15 50 50)" />
+                    <ellipse cx="50" cy="50" rx="7" ry="31" transform="rotate(45 50 50)" />
+                    <ellipse cx="50" cy="50" rx="7" ry="31" transform="rotate(75 50 50)" />
+                    <ellipse cx="50" cy="50" rx="7" ry="31" transform="rotate(105 50 50)" />
+                    <ellipse cx="50" cy="50" rx="7" ry="31" transform="rotate(135 50 50)" />
+                    <ellipse cx="50" cy="50" rx="7" ry="31" transform="rotate(165 50 50)" />
+                </g>
+                <circle cx="50" cy="50" r="9" fill="#a64b00" />
+            </symbol>
+            <symbol id="vela" viewBox="0 0 20 60">
+                <rect x="4" y="22" width="12" height="38" rx="2" fill="#fff3dc" />
+                <path class="llama" d="M10 3C15 10 16 15 10 21 4 15 5 10 10 3Z" fill="#ffd24a" />
+                <path class="llama" d="M10 11C12 14 12 16 10 19 8 16 8 14 10 11Z" fill="#ff7a00" />
+            </symbol>
+            <symbol id="calavera" viewBox="0 0 100 100">
+                <path d="M50 6C26 6 12 24 12 46c0 14 6 22 14 27v13h48V73c8-5 14-13 14-27C88 24 74 6 50 6Z"
+                    fill="#fff3dc" />
+                <circle cx="34" cy="46" r="13" fill="#1d0b2e" />
+                <circle cx="66" cy="46" r="13" fill="#1d0b2e" />
+                <circle cx="34" cy="46" r="16" fill="none" stroke="#5ad1c5" stroke-width="3" stroke-dasharray="3 3" />
+                <circle cx="66" cy="46" r="16" fill="none" stroke="#5ad1c5" stroke-width="3" stroke-dasharray="3 3" />
+                <circle cx="34" cy="46" r="6" fill="#e0457b" />
+                <circle cx="66" cy="46" r="6" fill="#e0457b" />
+                <path d="M50 56l-6 12h12z" fill="#1d0b2e" />
+                <circle cx="50" cy="20" r="5" fill="#ffa51f" />
+                <circle cx="35" cy="25" r="3.5" fill="#5ad1c5" />
+                <circle cx="65" cy="25" r="3.5" fill="#5ad1c5" />
+                <circle cx="22" cy="62" r="3" fill="#e0457b" />
+                <circle cx="78" cy="62" r="3" fill="#e0457b" />
+                <path d="M28 78h44M37 74v12M46 74v12M54 74v12M63 74v12" stroke="#1d0b2e" stroke-width="3" fill="none" />
+            </symbol>
+        </defs>
+    </svg>
+    <div class="lluvia" aria-hidden="true"><svg viewBox="0 0 100 100"
+            style="left:6%;animation-duration:19s;animation-delay:-3s">
+            <use href="#flor" />
+        </svg><svg viewBox="0 0 100 100" style="left:18%;animation-duration:24s;animation-delay:-12s">
+            <use href="#flor" />
+        </svg><svg viewBox="0 0 100 100" style="left:31%;animation-duration:16s;animation-delay:-7s">
+            <use href="#flor" />
+        </svg><svg viewBox="0 0 100 100" style="left:45%;animation-duration:22s;animation-delay:-1s">
+            <use href="#flor" />
+        </svg><svg viewBox="0 0 100 100" style="left:58%;animation-duration:18s;animation-delay:-10s">
+            <use href="#flor" />
+        </svg><svg viewBox="0 0 100 100" style="left:70%;animation-duration:26s;animation-delay:-15s">
+            <use href="#flor" />
+        </svg><svg viewBox="0 0 100 100" style="left:83%;animation-duration:20s;animation-delay:-5s">
+            <use href="#flor" />
+        </svg><svg viewBox="0 0 100 100" style="left:94%;animation-duration:17s;animation-delay:-9s">
+            <use href="#flor" />
+        </svg></div><svg class="rincon r1" viewBox="0 0 100 100" aria-hidden="true">
+        <use href="#flor" />
+    </svg><svg class="rincon r2" viewBox="0 0 100 100" aria-hidden="true">
+        <use href="#flor" />
+    </svg>
+    <div class="picado" aria-hidden="true"></div>
+    <header class="top">
+        <a class="brand" href="#inicio">Saatan Historia</a>
+        <nav aria-label="Principal" id="nav">
+            <a href="#inicio">Inicio</a><a href="#historia">Historia</a><a href="#personajes">Personajes</a><a
+                href="#niveles">Niveles</a><a href="#evento">Evento</a>
+        </nav>
+    </header>
+    <p id="estado" class="estado" role="status" hidden>Sin conexión: usando datos guardados.</p>
+    <main id="app" tabindex="-1">
+        <p class="cargando">Cargando…</p>
+    </main>
+    <div class="guirnalda" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg></div>
+    <div class="ofrenda" aria-hidden="true"><svg width="48" height="48" viewBox="0 0 100 100">
+            <use href="#calavera" />
+        </svg><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg><svg width="18" height="54" viewBox="0 0 20 60">
+            <use href="#vela" />
+        </svg><svg width="48" height="48" viewBox="0 0 100 100">
+            <use href="#calavera" />
+        </svg><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg><svg width="48" height="48" viewBox="0 0 100 100">
+            <use href="#calavera" />
+        </svg><svg width="18" height="54" viewBox="0 0 20 60">
+            <use href="#vela" />
+        </svg><svg width="34" height="34" viewBox="0 0 100 100">
+            <use href="#flor" />
+        </svg><svg width="48" height="48" viewBox="0 0 100 100">
+            <use href="#calavera" />
+        </svg></div>
+    <div class="greca" aria-hidden="true"></div>
+    <footer><button id="instalar" hidden>Instalar app</button><span>Saatan Historia &copy; 2026,
+            Cancún</span></footer>
+    <script src="app.js"></script>
+</body>
+
+</html>

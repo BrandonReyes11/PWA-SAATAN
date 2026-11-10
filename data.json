@@ -1,0 +1,155 @@
+
+{
+    "game": {
+        "titulo": "Saatan Historia",
+        "lema": "Un niño, una perrita de azúcar y un camino de cempasúchil para volver a casa.",
+        "sinopsis": "Iktan despierta en una celda helada y sin recuerdos. Con la ayuda de Abbi, una xoloitzcuintle hecha de calaverita de azúcar, deberá cruzar cuatro mundos del Mictlán usando el sigilo, la distracción y su ingenio, mientras cada recompensa levanta un altar de muertos.",
+        "genero": "Sigilo y puzzles 2D",
+        "plataformas": "Móvil y escritorio",
+        "equipo": "Yoel Alfredo Canul Gijon · IDYGS102"
+    },
+    "mecanicas": [
+        {
+            "t": "Sigilo en cuclillas",
+            "d": "Avanza agachado entre sombras, hierba y escombros para no ser detectado."
+        },
+        {
+            "t": "Distrae con objetos",
+            "d": "Lanza piedras y trompos para atraer a los enemigos y abrir camino."
+        },
+        {
+            "t": "Usa el entorno",
+            "d": "Aceite, columnas frágiles y vitrales son la clave para derrotar a cada jefe."
+        },
+        {
+            "t": "Construye el altar",
+            "d": "Cada recompensa que ofrendas añade un piso al altar de muertos."
+        }
+    ],
+    "personajes": [
+        {
+            "id": "iktan",
+            "n": "Iktan",
+            "rol": "Protagonista",
+            "tipo": "aliado",
+            "d": "Un niño valiente con sombrero de paja y huaraches. Es sigiloso, curioso y quiere volver con su mamá.",
+            "img": "img/personajes/iktan.png"
+        },
+        {
+            "id": "abbi",
+            "n": "Abbi",
+            "rol": "Guía",
+            "tipo": "aliado",
+            "d": "Perrita xoloitzcuintle de azúcar. Atraviesa barrotes, advierte peligros y se esconde en el sombrero de Iktan.",
+            "img": "img/personajes/abbi.png"
+        },
+        {
+            "id": "nahual",
+            "n": "El Nahual",
+            "rol": "Jefe del Nivel II",
+            "tipo": "enemigo",
+            "d": "Mezcla de jaguar y lobo que acecha desde las ramas. Reacciona al menor ruido.",
+            "img": "img/personajes/nahual.png"
+        }
+    ],
+    "niveles": [
+        {
+            "n": "Práctica",
+            "t": "Zona de entrenamiento",
+            "r": "Técnicas de sigilo",
+            "d": "Aprende a esconderte en la hierba alta, evitar el cono de visión y moverte sin hacer ruido.",
+            "img": "img/gameplay_practica.png",
+            "audio": null,
+            "wiki": "Día_de_Muertos"
+        },
+        {
+            "n": "Nivel I",
+            "t": "La selva",
+            "r": "Trompos de gatitos",
+            "d": "Avanza entre la niebla y atrae al Nahual hacia unas ruinas inestables.",
+            "img": "img/gameplay_selva_nahual.png",
+            "audio": "audio/selva.mp3",
+            "wiki": "Nahual"
+        },
+        {
+            "n": "Nivel II",
+            "t": "La iglesia",
+            "r": "El altar completo",
+            "d": "Esquiva la mirada roja del diablo y derriba las tablas de los vitrales.",
+            "img": "img/gameplay_iglesia_diablo.png",
+            "audio": "audio/iglesia.mp3",
+            "wiki": "Cempasúchil"
+        }
+    ],
+    "historia": {
+        "intro": [
+            [
+                "El diablo andaba reposando,",
+                "en las fauces de un árbol,",
+                "entonces un niño pasó caminando,",
+                "con un cocol en el regazo."
+            ],
+            [
+                "El diablo todo un envidioso,",
+                "quiso quitarle aquel sabroso bocado,",
+                "vaya diablo más quejoso,",
+                "el niño sin saberlo, estaba condenado."
+            ],
+            [
+                "Qué diablo más mañoso,",
+                "vaya diablo más cruel,",
+                "ya ves niño, no vuelvas a ser pecaminoso,",
+                "aún estás a tiempo de comer pastel."
+            ],
+            [
+                "Es momento, el diablo comenzará con sus artimañas",
+                "que mandará al niño hasta lo más profundo del panteón.",
+                "Vamos Iktan, en breves vivirás una extraña hazaña,",
+                "apúrate que tu mami te espera con su inmenso corazón."
+            ],
+            [
+                "Vaya, en serio, ¿todo esto es por un cocol?",
+                "Ese diablo tan incompetente."
+            ]
+        ],
+        "capitulos": [
+            {
+                "tab": "Selva",
+                "titulo": "Nivel II – La selva",
+                "texto": [
+                    "Al cruzar la puerta, el frío del calabozo fue reemplazado por un calor húmedo y asfixiante. Iktan y Abbi se encontraron en medio de una selva densa, rodeados de árboles colosales cuyas raíces retorcidas parecían serpientes y una espesa niebla verde que apenas dejaba pasar la luz.",
+                    "Al dar los primeros pasos sobre la tierra mojada, Abbi se detuvo en seco. Su cuerpecito de azúcar temblaba. Mirando hacia la oscuridad de la maleza, le advirtió a Iktan que debían tener extremo cuidado. Allí habitaba un Nahual, una bestia puramente malvada que cazaba sin descanso a quien invadiera su territorio.",
+                    "No tardaron en sentir su presencia. El Nahual no era un animal normal; era una sombra inmensa que parecía una mezcla grotesca entre un jaguar desnutrido y un lobo deforme, con ojos amarillos que perforaban la niebla, acechando desde las ramas altas.",
+                    "Sabiendo que no podrían ganarle en velocidad a una criatura así, Iktan se agachó. Avanzaron en cuclillas a través de la hierba alta, usando el espeso follaje para esconderse hasta llegar a unas antiguas ruinas de piedra.",
+                    "El niño lanzó una piedra para distraerlo y, cuando el Nahual cayó debajo del techo de piedra inestable, lanzó otra piedra contra la columna agrietada. El techo colapsó, sepultando a la bestia y despejando el camino."
+                ],
+                "recompensa": [
+                    "Entre los escombros encontró su recompensa: un set de trompos de madera pintados a mano. Al ofrendarlos, la mesa espectral apareció y un nuevo camino se abrió hacia la iglesia."
+                ]
+            },
+            {
+                "tab": "Iglesia",
+                "titulo": "Nivel IV – La iglesia",
+                "texto": [
+                    "Con el costal a cuestas, Iktan y Abbi subieron los escalones de piedra hacia la imponente iglesia. Al empujar las grandes puertas de madera, ingresaron a un abismo oscuro.",
+                    "En el centro se alzaba el Diablo, una inmensa sombra sin rostro que proyectaba desde su cabeza dos haces de luz roja que barrían el suelo como reflectores. Si esa mirada tocaba a Iktan, su alma quedaría atrapada para siempre.",
+                    "Usando piedras y trompos para distraer la siniestra mirada, Iktan se escurrió por los costados del templo hasta los inmensos vitrales tapados con tablas podridas.",
+                    "Con todas sus fuerzas, derribó las tablas de los vitrales. Un poderoso rayo de luz celestial cortó la oscuridad y desintegró por completo a la sombra gigante.",
+                    "La oscuridad se esfumó. Frente a Iktan se abrió un hermoso y cálido camino de pétalos de cempasúchil hacia la luz y la paz de su familia."
+                ],
+                "recompensa": []
+            }
+        ],
+        "final": "La travesía de Iktan es la realidad de muchos. El secuestro deja una herida irreparable que arrebata el futuro. Pero mientras exista el amor, el recuerdo de una familia y la luz de un altar, ninguna alma caminará sola en la oscuridad."
+    },
+    "wiki_idioma": "es",
+    "evento": {
+        "nombre": "Expo Videojuegos UT Cancún",
+        "fecha": "2026-11-20T17:00:00",
+        "lugar": "Universidad Tecnológica de Cancún",
+        "direccion": "Carretera Cancún–Aeropuerto, Km 11.5, Cancún, Quintana Roo",
+        "desc": "Prueba la demo de Saatan Historia, conoce al equipo y descubre el resto de los videojuegos del cuatrimestre.",
+        "lat": 21.0456,
+        "lon": -86.8738
+    }
+}
